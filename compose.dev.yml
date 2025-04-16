@@ -1,0 +1,26 @@
+name: gene-dev
+services:
+  backend:
+    image: ${NODE_IMAGE}
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    environment:
+      - PORT=${BACKEND_PORT}
+    entrypoint: ["sh", "-c"]
+    command: ["npm install --no-update-notifier && npm start"]
+
+  frontend:
+    image: ${NODE_IMAGE}
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    environment:
+      - PORT=${FRONTEND_PORT}
+      - VITE_API_URL=${API_URL}
+    entrypoint: ["sh", "-c"]
+    command: ["npm install --no-update-notifier && npm start"]
