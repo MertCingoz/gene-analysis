@@ -73,7 +73,7 @@ docker compose build
 This creates optimized Docker images that can be deployed to any environment that supports Docker.
 
 > **Note:** Port 5000 might already be in use by your operating system:
-> - **macOS (Monterey and later)**: Port 5000 is used by AirPlay Receiver service. You can disable this in System Preferences > Sharing > AirPlay Receiver, or change the FRONTEND_PORT in the .env file.
+> - **macOS (Monterey and later)**: Port 5000 is used by AirPlay Receiver service. You can either turn off the AirPlay Receiver or change the FRONTEND_PORT in the .env file.
 > - **Windows**: Port 5000 might be used by UPnP (Universal Plug and Play) or other system services.
 > 
 > If you encounter a port conflict, you can change the FRONTEND_PORT in the .env file to another value (e.g., 3000).
