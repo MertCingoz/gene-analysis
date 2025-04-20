@@ -1,12 +1,12 @@
 # Gene Analysis
 
 ## Overview
-This project is a web application with a React frontend and Node.js backend. It provides data visualization and analysis capabilities for omics data.
+This project is a web application with a React frontend and Bun backend. It provides data visualization and analysis capabilities for omics data.
 
 ## Tech Stack
 
 ### Backend
-- **Node.js** - JavaScript runtime
+- **Bun** - JavaScript/TypeScript runtime (replacing Node.js)
 - **Hono** - Lightweight web framework
 - **SQLite** - Database engine
 - **Drizzle ORM** - Database ORM
@@ -26,7 +26,7 @@ This project is a web application with a React frontend and Node.js backend. It 
 
 ### Environment Variables
 The project uses the following environment variables (defined in `.env`):
-- `NODE_IMAGE`: Node.js Docker image to use
+- `BUN_IMAGE`: Bun Docker image to use
 - `BACKEND_HOST`: Host for the backend service
 - `BACKEND_PORT`: Port for the backend service
 - `API_URL`: URL for API requests
@@ -79,7 +79,7 @@ This creates optimized Docker images that can be deployed to any environment tha
 > If you encounter a port conflict, you can change the FRONTEND_PORT in the .env file to another value (e.g., 3000).
 
 ## Project Structure
-- `/backend` - Node.js backend code
+- `/backend` - Bun backend code
   - `/src` - Source code
   - `/data` - Database and sample data
 - `/frontend` - React frontend code
