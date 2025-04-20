@@ -1,5 +1,5 @@
-import Database from 'better-sqlite3';
-import { drizzle } from 'drizzle-orm/better-sqlite3';
+import { Database } from 'bun:sqlite';
+import { drizzle } from 'drizzle-orm/bun-sqlite';
 import { real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import fs from 'fs';
 import path from 'path';
@@ -56,7 +56,7 @@ export const initializeDb = async () => {
         const rows = content.trim().split('\n').slice(1); // Skip the header line
 
         const insertValues = rows.map((row) => {
-            const [gene, transcript, e1, e2, e3, c1, c2, c3] = row.split('\t');
+            const [gene = '', _, e1 = '0', e2 = '0', e3 = '0', c1 = '0', c2 = '0', c3 = '0'] = row.split('\t');
             return {
                 gene,
                 exper_rep1: parseFloat(e1),
@@ -72,7 +72,7 @@ export const initializeDb = async () => {
         const BATCH_SIZE = 1000;
         for (let i = 0; i < insertValues.length; i += BATCH_SIZE) {
             const batch = insertValues.slice(i, i + BATCH_SIZE);
-            await db.insert(geneExpression).values(batch).run();
+            db.insert(geneExpression).values(batch).run();
             console.log(`${batch.length} rows inserted`);
         }
         console.log(`Data import complete: Successfully inserted ${insertValues.length} records into the database`);

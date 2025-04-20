@@ -1,6 +1,13 @@
 import { Autocomplete, Button, Box, TextField } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
-import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
+import {
+    DataGrid,
+    GridColDef,
+    GridRowId,
+    GridRowSelectionModel,
+    GridToolbar,
+    GridToolbarContainer
+} from '@mui/x-data-grid';
 import axios from 'axios';
 import debounce from 'lodash/debounce';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
@@ -8,17 +15,31 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 // Set the global base URL
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
+type RowData = {
+    id: number;
+    gene: string;
+    exper_rep1: number;
+    exper_rep2: number;
+    exper_rep3: number;
+    control_rep1: number;
+    control_rep2: number;
+    control_rep3: number;
+    mean?: number;
+    median?: number;
+    variance?: number;
+};
+
 export default function App() {
-    const autocompleteRef = useRef(null);
-    const [rows, setRows] = useState([]);
+    const autocompleteRef = useRef<HTMLElement>(null);
+    const [rows, setRows] = useState<RowData[]>([]);
     const [geneOptions, setGeneOptions] = useState([]);
-    const [selectedGenes, setSelectedGenes] = useState([]);
+    const [selectedGenes, setSelectedGenes] = useState<string[]>([]);
     const [textFieldValue, setTextFieldValue] = useState('');
-    const [selectedRowIds, setSelectedRowIds] = useState([]);
+    const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]);
 
     useEffect(() => {
         if (geneOptions.length) {
-            autocompleteRef.current.querySelector('input').focus();
+            autocompleteRef.current?.querySelector('input')?.focus();
         }
     }, [geneOptions]);
 
@@ -39,7 +60,7 @@ export default function App() {
     const handleFetchData = async () => {
         try {
             const res = await axios.post('/fetch', { geneIDs: selectedGenes });
-            const data = res.data.map((row, index) => ({ id: index, ...row }));
+            const data = res.data.map((row: RowData, index: number) => ({ ...row, id: index }));
             setRows(data);
             setSelectedRowIds([]);
         } catch (err) {
@@ -58,7 +79,7 @@ export default function App() {
                     filterSelectedOptions
                     options={geneOptions}
                     value={selectedGenes}
-                    onChange={(event, newValue) => setSelectedGenes(newValue)}
+                    onChange={(_, newValue) => setSelectedGenes(newValue)}
                     filterOptions={(options) => options}
                     renderInput={(params) => (
                         <TextField
@@ -85,7 +106,7 @@ export default function App() {
         </GridToolbarContainer>
     );
 
-    const handleRowAnalysis = async (row) => {
+    const handleRowAnalysis = async (row: RowData) => {
         try {
             if (row.median !== undefined) return;
             const res = await axios.post('/analyze', { geneID: row.gene });
@@ -97,7 +118,7 @@ export default function App() {
         }
     };
 
-    const columns = [
+    const columns: readonly GridColDef[] = [
         { field: 'gene', headerName: 'Gene', width: 200 },
         { field: 'exper_rep1', headerName: 'Exp 1', type: 'number' },
         { field: 'exper_rep2', headerName: 'Exp 2', type: 'number' },
@@ -131,7 +152,9 @@ export default function App() {
     const ChartFooter = useMemo(() => {
         return memo(() => {
             if (selectedRowIds.length === 0) return null;
-            const selectedRows = selectedRowIds.map(id => rows.find(r => r.id === id));
+            const selectedRows = selectedRowIds
+                .map(id => rows.find(r => r.id === id))
+                .filter(r => r !== undefined) as RowData[];
             return (
                 <BarChart
                     sx={{ paddingTop: '6px', borderTop: '0.5px solid', borderColor: 'primary.main' }}
@@ -166,7 +189,7 @@ export default function App() {
             checkboxSelection
             disableRowSelectionOnClick
             rowSelectionModel={selectedRowIds}
-            onRowSelectionModelChange={(ids) => setSelectedRowIds(ids)}
+            onRowSelectionModelChange={(ids: GridRowSelectionModel) => setSelectedRowIds(Array.from(ids))}
         />
     );
 }

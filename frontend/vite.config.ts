@@ -5,9 +5,12 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     server: {
         host: true,
-        port: process.env.PORT,
+        port: Number(process.env.PORT),
         watch: { usePolling: true },
         cors: true,
     },
     plugins: [react()],
+    build: {
+        chunkSizeWarningLimit: 1000,
+    },
 });

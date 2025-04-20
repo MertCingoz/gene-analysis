@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { z } from 'zod';
 
-import { db, geneExpression } from './db.js';
+import { db, geneExpression } from './db.ts';
 
 export const app = new Hono();
 app.use('*', cors());
@@ -65,7 +65,7 @@ app.get('/api/search', async (c) => {
         return c.json({ error: 'geneID query param required' }, 400);
     }
 
-    const results = await db
+    const results = db
         .select({ gene: geneExpression.gene })
         .from(geneExpression)
         .where(like(geneExpression.gene, `%${geneID}%`))

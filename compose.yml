@@ -4,7 +4,7 @@ services:
     build:
       context: backend
       args:
-        NODE_IMAGE: ${NODE_IMAGE}
+        BUN_IMAGE: ${BUN_IMAGE}
     ports:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     volumes:
@@ -24,7 +24,7 @@ services:
     build:
       context: frontend
       args:
-        NODE_IMAGE: ${NODE_IMAGE}
+        BUN_IMAGE: ${BUN_IMAGE}
         VITE_API_URL: ${API_URL}
     ports:
       - "${FRONTEND_PORT}:80"
