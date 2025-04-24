@@ -21,8 +21,7 @@ app.post('/api/fetch', async (c) => {
         return c.json({ error: 'Invalid input' }, 400);
     }
 
-    const data = db
-        .select()
+    const data = db.select()
         .from(geneExpression)
         .where(inArray(geneExpression.gene, parsed.data.geneIDs))
         .all();
@@ -41,8 +40,7 @@ app.post('/api/analyze', async (c) => {
     }
 
     const { geneID } = parsed.data;
-    const result = db
-        .select()
+    const result = db.select()
         .from(geneExpression)
         .where(eq(geneExpression.gene, geneID))
         .get();
@@ -65,8 +63,7 @@ app.get('/api/search', async (c) => {
         return c.json({ error: 'geneID query param required' }, 400);
     }
 
-    const results = db
-        .select({ gene: geneExpression.gene })
+    const results = db.select({ gene: geneExpression.gene })
         .from(geneExpression)
         .where(like(geneExpression.gene, `%${geneID}%`))
         .orderBy(asc(geneExpression.gene))

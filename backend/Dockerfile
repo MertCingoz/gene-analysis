@@ -1,4 +1,4 @@
-ARG BUN_IMAGE=oven/bun:1.2.10-alpine
+ARG BUN_IMAGE=oven/bun:1.2.12-alpine
 
 # Build stage
 FROM ${BUN_IMAGE} AS build

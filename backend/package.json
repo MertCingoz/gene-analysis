@@ -8,13 +8,13 @@
     "build": "tsc --build && bun build src/index.ts --target bun --outdir dist"
   },
   "dependencies": {
-    "drizzle-orm": "^0.42.0",
-    "hono": "^4.7.7",
+    "drizzle-orm": "^0.43.1",
+    "hono": "^4.7.8",
     "zod": "^3.24.3"
   },
   "devDependencies": {
-    "@types/bun": "^1.2.10",
-    "nodemon": "^3.1.9",
+    "@types/bun": "^1.2.12",
+    "nodemon": "^3.1.10",
     "typescript": "^5.8.3"
   }
 }

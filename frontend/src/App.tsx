@@ -1,13 +1,7 @@
 import { Autocomplete, Button, Box, TextField } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
-import {
-    DataGrid,
-    GridColDef,
-    GridRowId,
-    GridRowSelectionModel,
-    GridToolbar,
-    GridToolbarContainer
-} from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
+import { GridToolbar } from '@mui/x-data-grid/internals';
 import axios from 'axios';
 import debounce from 'lodash/debounce';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
@@ -35,7 +29,7 @@ export default function App() {
     const [geneOptions, setGeneOptions] = useState([]);
     const [selectedGenes, setSelectedGenes] = useState<string[]>([]);
     const [textFieldValue, setTextFieldValue] = useState('');
-    const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]);
+    const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>({ ids: new Set(), type: 'include' });
 
     useEffect(() => {
         if (geneOptions.length) {
@@ -62,14 +56,14 @@ export default function App() {
             const res = await axios.post('/fetch', { geneIDs: selectedGenes });
             const data = res.data.map((row: RowData, index: number) => ({ ...row, id: index }));
             setRows(data);
-            setSelectedRowIds([]);
+            setSelectedRowIds({ ids: new Set(), type: 'include' });
         } catch (err) {
             console.error('Data fetch failed', err);
         }
     };
 
     const SearchBar = () => (
-        <GridToolbarContainer sx={{ borderBottom: '0.5px solid', borderColor: 'primary.main' }}>
+        <Box sx={{ borderBottom: '0.5px solid', borderColor: 'primary.main' }}>
             <Box sx={{ p: 1, gap: 2, display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
                 <Autocomplete
                     sx={{ width: '100%' }}
@@ -102,8 +96,8 @@ export default function App() {
                     Fetch
                 </Button>
             </Box>
-            <GridToolbar printOptions={{ hideToolbar: true }}/>
-        </GridToolbarContainer>
+            <GridToolbar printOptions={{ disableToolbarButton: true }} showQuickFilter={false}/>
+        </Box>
     );
 
     const handleRowAnalysis = async (row: RowData) => {
@@ -151,10 +145,9 @@ export default function App() {
 
     const ChartFooter = useMemo(() => {
         return memo(() => {
-            if (selectedRowIds.length === 0) return null;
-            const selectedRows = selectedRowIds
-                .map(id => rows.find(r => r.id === id))
-                .filter(r => r !== undefined) as RowData[];
+            const ids = Array.from(selectedRowIds.ids);
+            if (ids.length === 0) return null;
+            const selectedRows = ids.map(id => rows.find(r => r.id === id)!);
             return (
                 <BarChart
                     sx={{ paddingTop: '6px', borderTop: '0.5px solid', borderColor: 'primary.main' }}
@@ -186,10 +179,11 @@ export default function App() {
             columns={columns}
             rows={rows}
             hideFooterPagination
+            showToolbar
             checkboxSelection
             disableRowSelectionOnClick
             rowSelectionModel={selectedRowIds}
-            onRowSelectionModelChange={(ids: GridRowSelectionModel) => setSelectedRowIds(Array.from(ids))}
+            onRowSelectionModelChange={(ids: GridRowSelectionModel) => setSelectedRowIds(ids)}
         />
     );
 }
