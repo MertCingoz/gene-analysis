@@ -1,7 +1,7 @@
 import { asc, eq, like, inArray } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { db, geneExpression } from './db.ts';
 
