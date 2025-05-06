@@ -1,4 +1,4 @@
-ARG BUN_IMAGE=oven/bun:1.2.12-alpine
+ARG BUN_IMAGE=oven/bun:1.2.14-alpine
 
 # Build stage
 FROM ${BUN_IMAGE} AS build
@@ -6,7 +6,7 @@ WORKDIR /app
 # Copy and install dependencies
 COPY package.json .
 COPY bun.lock .
-RUN bun install --frozen-lockfile #https://github.com/oven-sh/bun/issues/5283
+RUN bun install --frozen-lockfile
 # Copy source code
 COPY . .
 ENV NODE_ENV=production
